@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package solution_with_zmq;
+
+message msg_info {
+    string id = 1;
+    string symbol = 2;
+    double price = 3;
+    double quantity = 4;
+    string datetime = 5;
+}
