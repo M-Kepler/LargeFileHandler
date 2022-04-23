@@ -6,6 +6,7 @@ and call $callback function to handle it.
 """
 
 import math
+import aiofiles
 import multiprocessing as mp
 import os
 
@@ -62,15 +63,17 @@ class FileHandler(object):
                 if chunk_end > file_end:
                     break
 
-    def work(self, chunk_start, chunk_size):
+    async def work(self, chunk_start, chunk_size):
         """
-        do_something with input file chunk
+        work with input file chunk
+
+        :param chunk_start - pointer of file content
+        :param chunk_size  - size of parts os file
         """
-        with open(self._input_file) as fd:
+        async with aiofiles.open(self._input_file) as fd:
             fd.seek(chunk_start)
-            chunk_data = fd.read(chunk_size)
-            # FIXME 回调完成才能执行下一个任务？
-            self._callback(chunk_data)
+            chunk_data = await fd.read(chunk_size)
+            await self._callback(chunk_data)
 
 
 if __name__ == "__main__":

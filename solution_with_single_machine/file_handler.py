@@ -125,7 +125,10 @@ class FileHandler(object):
 
     def worker(self, chunk_start, chunk_size):
         """
-        do_something with input file chunk
+        work with input file chunk
+
+        :param chunk_start - pointer of file content
+        :param chunk_size  - size of parts os file
         """
         with open(self._input_file) as fd:
             fd.seek(chunk_start)
