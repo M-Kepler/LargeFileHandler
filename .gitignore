@@ -1,4 +1,4 @@
-**/**input.txt
+**/*.txt
 **/__pycache__
 .vscode
 tmp

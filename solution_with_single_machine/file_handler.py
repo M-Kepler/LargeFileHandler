@@ -9,6 +9,7 @@ Description  : large file handler
 """
 
 import datetime
+import json
 import math
 import multiprocessing as mp
 import os
@@ -43,25 +44,35 @@ def handle(id: str, symbol: str, price: Decimal, quantity: Decimal, type: str,
         pass
 
     """
-    # print(os.getpid(), id, symbol, price, quantity, type, datetime)
-    pass
+    return json.dumps({
+        "id": id,
+        "symbol": symbol,
+        "price": price,
+        "quantity": quantity,
+        "type": type,
+        "datetime": datetime
+    })
 
 
 def line_handler(chunk_data):
-    try:
-        # line_content = json.loads(line)
-        # handle(**line_content)
-        with open(const.OUPUT_FILE, "a+") as fd:
-            # XXX 写入后，只有一行数据了，没有换行符
-            # fd.writelines(chunk_data.splitlines())
-            for line in chunk_data.splitlines():
-                fd.write(line + "\n")
-    except Exception as ex:
-        print("handle with error: {}".format(ex))
-        raise ex
+    """
+    handle file data
+    """
+    results = []
+    for line in chunk_data.splitlines():
+        try:
+            line_content = json.loads(line)
+            result = handle(**line_content)
+        except Exception as ex:
+            print("handle {} with error: {}".format(line, ex))
+        else:
+            results.append(result + "\n")
+
+    with open(const.OUPUT_FILE, "a+") as fd:
+        fd.writelines(results)
 
 
-class LargeFileHandler(object):
+class FileHandler(object):
     """
     large file handler
     """
@@ -119,12 +130,8 @@ class LargeFileHandler(object):
         with open(self._input_file) as fd:
             fd.seek(chunk_start)
             chunk_data = fd.read(chunk_size)
+            # FIXME 阻塞
             self._callback(chunk_data)
-            """
-            lines = fd.read(chunk_size).splitlines()
-            for line in lines:
-                self._callback(line)
-            """
 
     def run(self):
         """
@@ -144,9 +151,13 @@ class LargeFileHandler(object):
         pool.close()
 
 
-if __name__ == "__main__":
+def main():
     if os.path.exists(const.OUPUT_FILE):
         os.remove(const.OUPUT_FILE)
 
-    api = LargeFileHandler(const.INPUT_FILE, line_handler)
+    api = FileHandler(const.INPUT_FILE, line_handler)
     api.run()
+
+
+if __name__ == "__main__":
+    main()
