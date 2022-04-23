@@ -9,7 +9,6 @@ Description  : large file handler
 """
 
 import datetime
-import json
 import math
 import multiprocessing as mp
 import os
@@ -48,16 +47,21 @@ def handle(id: str, symbol: str, price: Decimal, quantity: Decimal, type: str,
     pass
 
 
-def line_handler(line):
+def line_handler(chunk_data):
     try:
-        line_content = json.loads(line)
-        handle(**line_content)
+        # line_content = json.loads(line)
+        # handle(**line_content)
+        with open(const.OUPUT_FILE, "a+") as fd:
+            # XXX 写入后，只有一行数据了，没有换行符
+            # fd.writelines(chunk_data.splitlines())
+            for line in chunk_data.splitlines():
+                fd.write(line + "\n")
     except Exception as ex:
-        print("handle {} with error: {}".format(line, ex))
+        print("handle with error: {}".format(ex))
         raise ex
 
 
-class FileHandler(object):
+class LargeFileHandler(object):
     """
     large file handler
     """
@@ -100,8 +104,9 @@ class FileHandler(object):
 
                 # XXX for log progress
                 progress += (chunk_end - chunk_start)
-                print('{0} of {1} bytes read ({2}%)'.format(
-                    progress, file_end, int(progress / file_end * 100)))
+                print('{0} MB of {1} MB bytes read ({2}%)'.format(
+                    progress / 1024 / 1024, file_end / 1024 / 1024,
+                    int(progress / file_end * 100)))
 
                 yield chunk_start, chunk_end - chunk_start
                 if chunk_end > file_end:
@@ -111,12 +116,15 @@ class FileHandler(object):
         """
         do_something with input file chunk
         """
-        print(os.getpid())
         with open(self._input_file) as fd:
             fd.seek(chunk_start)
+            chunk_data = fd.read(chunk_size)
+            self._callback(chunk_data)
+            """
             lines = fd.read(chunk_size).splitlines()
             for line in lines:
                 self._callback(line)
+            """
 
     def run(self):
         """
@@ -129,7 +137,7 @@ class FileHandler(object):
             jobs.append(pool.apply_async(
                 self.worker, (chunk_start, chunk_size)))
 
-        # wait mission finish
+        # do work with chunk
         for job in jobs:
             job.get()
 
@@ -137,5 +145,8 @@ class FileHandler(object):
 
 
 if __name__ == "__main__":
-    api = FileHandler(const.INPUT_FILE, line_handler)
+    if os.path.exists(const.OUPUT_FILE):
+        os.remove(const.OUPUT_FILE)
+
+    api = LargeFileHandler(const.INPUT_FILE, line_handler)
     api.run()
