@@ -4,7 +4,7 @@ import zmq
 import asyncio
 import zmq.asyncio
 from datetime import datetime
-from file_handler import FileHandler
+from file_handle.file_handler import FileHandler
 from const import ServerCfg as const
 
 
@@ -35,16 +35,14 @@ async def main():
     api = Server()
 
     file_handle_api = FileHandler(
-        const.INPUT_FILE, const.CHUNK_SIZE, api.handler)
+        const.INPUT_FILE, api.handler)
 
     mission_cnt = 0
     for chunk_start, chunk_size in file_handle_api.chunkify():
         mission_cnt += 1
-        print("work with chunk: [%s, %s]" %
-              (chunk_start, chunk_start + chunk_size))
 
         # send data to worker
-        await file_handle_api.work(chunk_start, chunk_size)
+        await file_handle_api.worker(chunk_start, chunk_size)
 
     print("distribute [{} missions] finish.".format(mission_cnt))
 

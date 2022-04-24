@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<ul>
+<li><a href="#largefilehandler">LargeFileHandler</a>
+<ul>
+<li><a href="#%E9%A2%98%E7%9B%AE">题目</a></li>
+<li><a href="#%E8%A6%81%E6%B1%82">要求</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li>
+</ul>
+</li>
+<li><a href="#%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90">需求分析</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">解决方案</a>
+<ul>
+<li><a href="#%E5%81%87%E6%95%B0%E6%8D%AE%E6%9E%84%E9%80%A0">假数据构造</a></li>
+<li><a href="#%E6%AD%A3%E7%A1%AE%E6%80%A7%E5%88%A4%E6%96%AD">正确性判断</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E9%87%8F%E5%88%86%E6%9E%90">数据量分析</a></li>
+<li><a href="#%E5%8D%95%E6%9C%BA%E5%A4%84%E7%90%86">单机处理</a>
+<ul>
+<li><a href="#%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">处理流程</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95">执行方法</a></li>
+<li><a href="#%E5%87%86%E7%A1%AE%E6%80%A7">准确性</a></li>
+</ul>
+</li>
+<li><a href="#%E6%94%AF%E6%8C%81%E4%B8%AD%E6%96%AD%E7%BB%A7%E7%BB%AD">支持中断继续</a>
+<ul>
+<li><a href="#%E6%AD%A3%E5%B8%B8%E8%BF%90%E8%A1%8C%E6%97%B6">正常运行时</a></li>
+<li><a href="#%E8%BF%9B%E5%BA%A6%E8%AE%B0%E5%BD%95%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E6%97%B6">进度记录文件丢失时</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E5%BC%82%E5%B8%B8%E4%B8%AD%E6%96%AD%E6%97%B6">程序异常中断时</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">测试数据</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%84%E7%90%86">分布式处理</a>
+<ul>
+<li><a href="#%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B-1">处理流程</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95-1">执行方法</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91-server">任务分发 Server</a></li>
+<li><a href="#%E7%BB%93%E6%9E%9C%E6%B1%87%E6%80%BB%E5%A4%84%E7%90%86-sinker">结果汇总处理 Sinker</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-client">客户端 Client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="largefilehandler">LargeFileHandler</h1>
+<h2 id="%E9%A2%98%E7%9B%AE">题目</h2>
+<p>有一个很大的文本文件，它的大小可能有 <strong><code>几TB</code></strong>，其中存储的任何行的架构文本文件如下：</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"id"</span>: string,         <span class="hljs-comment">// uuid, it is unique in this file</span>
+    <span class="hljs-attr">"symbol"</span>: string,     <span class="hljs-comment">// symbol</span>
+    <span class="hljs-attr">"price"</span>: double,      <span class="hljs-comment">// the price of the symbol</span>
+    <span class="hljs-attr">"quantity"</span>: double,   <span class="hljs-comment">// the quantity of the symbol</span>
+    <span class="hljs-attr">"type"</span>: string,       <span class="hljs-comment">// the type, the optional value may be stock, future, option, fund.</span>
+    <span class="hljs-attr">"datetime"</span>: string,   <span class="hljs-comment">// the datetime of the current line</span>
+}
+</div></code></pre>
+<p>有一个函数可以处理一行，签名如下：</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle</span><span class="hljs-params">(id:str, symbol:str, price: Decimal, quantity:Decimal, type: str, dt: datetime)</span> -&gt; str:</span>
+    <span class="hljs-comment"># Hide detail code</span>
+    <span class="hljs-keyword">pass</span>
+
+</div></code></pre>
+<p>您需要将句柄函数的结果写入另一个名为 <code>result.txt</code> 的文本文件，并且随意将结果写入 <code>result.txt</code>，你可以乱写，如果逐行处理这个文件将很容易完成任务。</p>
+<h2 id="%E8%A6%81%E6%B1%82">要求</h2>
+<ul>
+<li>
+<p>你能写出最简单的程序来逐行处理文件吗？</p>
+</li>
+<li>
+<p>你能设计一个高效的程序来同时处理这个文件吗？请注意以下任何一项：</p>
+<ul>
+<li>
+<p>并行处理的程度。</p>
+</li>
+<li>
+<p>程序中断后，在下次启动时继续处理。</p>
+</li>
+<li>
+<p>您要处理的其他异常。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>请告诉我们您的设计理念，自由写设计文档，比如只写字，绘制设计图（UML 或流程图），编写伪代码等。</p>
+</li>
+</ul>
+<p>如果您完成了代码，您将非常出色。</p>
+<h2 id="%E6%B3%A8%E6%84%8F">注意</h2>
+<ul>
+<li>
+<p>handle 函数处理时，一整行在被处理时不依赖文件中的其他行。</p>
+</li>
+<li>
+<p>我们进一步测试发现 handle 函数的消耗时间是随机的，这不是一个错误，因为耗时取决于数据计算的复杂性。</p>
+</li>
+<li>
+<p>假设有<code>多台</code>电脑，其中任何一台都是 <code>64核、128GB内存，500GB 硬盘</code>，有一个数据存储服务器，配置是 <code>64核、128GB内存、1PB 硬盘</code>。</p>
+</li>
+<li>
+<p>注意记录任何对我们后期调试有用的方法的调试消息，如果出现任何异常。</p>
+</li>
+<li>
+<p>如果需要，请随意使用第三方库，例如 Message Queue 和 Log。</p>
+</li>
+<li>
+<p>如果您有任何问题，请尽快告诉我们。</p>
+</li>
+</ul>
+<h1 id="%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90">需求分析</h1>
+<p><img src="./images/需求分析.png" alt="image"></p>
+<h1 id="%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">解决方案</h1>
+<h2 id="%E5%81%87%E6%95%B0%E6%8D%AE%E6%9E%84%E9%80%A0">假数据构造</h2>
+<p><a href="./tools/fake.sh">tools/fake.sh</a></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># 文件已有行数 n</span>
+<span class="hljs-comment"># 一下命令生成 n * 2^30 行数据</span>
+
+<span class="hljs-comment"># generate test file input.txt</span>
+
+
+content=<span class="hljs-string">'{"id": "c9b72270-b548-47f5-af9d-6372846bd758", "symbol": "166842.XSHE", "price": 66.51, "quantity": 295, "type": "feature", "datetime": "2011-07-16 00:42:32481"}'</span> &gt; input.txt
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$content</span> &gt; input.txt
+
+<span class="hljs-comment"># it will generate 1 * 2^30 lines</span>
+
+<span class="hljs-comment"># _1GB = 1073741824 bytes</span>
+<span class="hljs-comment"># lines = _1GB / sizeof($content) # 6669203.875776397 lines</span>
+<span class="hljs-comment"># 2^22 = 4194304  lines -----&gt; 644 MB</span>
+<span class="hljs-comment"># 2^23 = 8388608  lines -----&gt; 1.2578125 GB</span>
+<span class="hljs-comment"># 2^24 = -----&gt; 2.515625 GB</span>
+<span class="hljs-comment"># 2^25 = -----&gt; 5.03125 GB</span>
+<span class="hljs-comment"># 2^26 = -----&gt; 10.0625 GB</span>
+<span class="hljs-comment"># 2^27 = -----&gt; 20.125 GB</span>
+<span class="hljs-comment"># 2^28 = -----&gt; 40.25 GB</span>
+<span class="hljs-comment"># 2^29 = -----&gt; 80.5 GB</span>
+<span class="hljs-comment"># 2^30 = -----&gt; 161.0 GB</span>
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> {1..22}; <span class="hljs-keyword">do</span> cat input.txt input.txt &gt; input2.txt &amp;&amp; mv input2.txt input.txt; <span class="hljs-keyword">done</span>
+
+wc input.txt
+</div></code></pre>
+<h2 id="%E6%AD%A3%E7%A1%AE%E6%80%A7%E5%88%A4%E6%96%AD">正确性判断</h2>
+<p>生成 <code>input.txt</code> 输入文件时，所有行的内容全部设置一样，最终判断一下 <code>input.txt</code> 和 <code>result.txt</code> 的 <code>md5</code> 是否一样即可</p>
+<h2 id="%E6%95%B0%E6%8D%AE%E9%87%8F%E5%88%86%E6%9E%90">数据量分析</h2>
+<p>如下格式的一条数据，存储占用 161 字节，1TB 大小的文件</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"c9b72270-b548-47f5-af9d-6372846bd758"</span>,
+    <span class="hljs-attr">"symbol"</span>: <span class="hljs-string">"166842.XSHE"</span>,
+    <span class="hljs-attr">"price"</span>: <span class="hljs-number">66.51</span>,
+    <span class="hljs-attr">"quantity"</span>: <span class="hljs-number">295</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"feature"</span>,
+    <span class="hljs-attr">"datetime"</span>: <span class="hljs-string">"2011-07-16 00:42:32481"</span>
+}
+</div></code></pre>
+<pre class="hljs"><code><div>_1KB = <span class="hljs-number">1024</span> <span class="hljs-comment"># byte</span>
+_1MB = <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>
+_1GB = <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>
+<span class="hljs-comment">#    = 1073741824 byte</span>
+<span class="hljs-comment">#    ==&gt; 1073741824 / 161 = 6669203.875776397 ≈ 667 0000 （667 万）行</span>
+
+_1TB = <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>
+<span class="hljs-comment">#    = 1099511627776 byte</span>
+<span class="hljs-comment">#    = 1099511627776 / 161 = 6829264768.795031 约等于 68 2926 4768 （68 亿) 行</span>
+
+_100GB = <span class="hljs-number">100</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>
+
+<span class="hljs-keyword">import</span> mullprocessing <span class="hljs-keyword">as</span> mp
+_PER_PROCESS_LOAD = _100GB / mp.cpu_count() / _1GB = <span class="hljs-number">25.0</span>
+
+_128GB = <span class="hljs-number">128</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>
+<span class="hljs-comment">#      = 137438953472 KB</span>
+<span class="hljs-comment">#      ==&gt; 137438953472 / 161 = 853658096.0993788 ≈ 8 5365 8096 （8.5 亿）行</span>
+
+PC_CNT = _1TB / _128GB
+<span class="hljs-comment">#      = 8.0</span>
+<span class="hljs-comment">#      ==&gt; 即需要 8 台 128GB 的机器才能一次性全部读取这批数据到内存</span>
+
+</div></code></pre>
+<ul>
+<li>
+<p><strong>如果在一台服务器上处理（即题目中提及的数据存储服务器），磁盘足够大，那么只需要考虑的就是内存问题；</strong></p>
+</li>
+<li>
+<p><strong>如果在题目中提及的非数据存储服务器上执行，需要考虑磁盘和内存问题，这个大文件肯定需要从数据存储服务器读取，所以还有网络通信的开销</strong></p>
+</li>
+</ul>
+<h2 id="%E5%8D%95%E6%9C%BA%E5%A4%84%E7%90%86">单机处理</h2>
+<h3 id="%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">处理流程</h3>
+<p><img src="./images/single-处理流程.png" alt="image"></p>
+<p>直接在数据存储服务器上操作，这个服务器磁盘空间足够，只需要考虑内存问题即可。（一般不允许这样操作，数据存储服务器是很重要的服务资源，一旦瘫痪，后果不堪设想）</p>
+<p><strong>读文件</strong></p>
+<p>从数据中心的机器上读入大文件，然后按照 <code>100GB</code> 进行切割，每个进程需要读入 <code>100GB / 64核 = 1.5625 GB</code> 的数据到内存</p>
+<ul>
+<li>
+<p>打开输入文件，用生成器按照 <code>$CHUNK_SIZE</code> 大小将文件方块，并传入到子进程中</p>
+</li>
+<li>
+<p>子进程打开文件，根据文件快的起始位置和大小，读入自己负责的那部分数据</p>
+</li>
+<li>
+<p>处理数据，可以通过 <code>splitlines()</code> 把数据按行切割，进行后序处理</p>
+</li>
+</ul>
+<p><strong>写文件</strong></p>
+<ul>
+<li>
+<p>多个进程各自处理各自的数据，但是最终都要输出到同一个文件，不控制的话，内容就会乱序，但是题目说，允许乱序</p>
+</li>
+<li>
+<p>也可以用 <code>multiprocessing</code> 的 <code>callback</code> 参数来处理子进程的执行结果，由父进程来完成文件写入</p>
+</li>
+</ul>
+<h3 id="%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95">执行方法</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># 进入工程目录</span>
+<span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_several_machine
+
+<span class="hljs-comment"># 生成测试数据</span>
+<span class="hljs-variable">$bash</span> ../tools/fake.sh
+
+<span class="hljs-comment"># 开始处理</span>
+<span class="hljs-variable">$rm</span> result.txt &amp;&amp; python main.py
+</div></code></pre>
+<h3 id="%E5%87%86%E7%A1%AE%E6%80%A7">准确性</h3>
+<p>以下为处理一个 41M 大小的文件的日志输出</p>
+<p><img src="./images/../images/single-文件切割.png" alt="image"></p>
+<pre class="hljs"><code><div>$cd ~/LargeFileHandler/solution_with_single_machine
+
+$rm -rf result.txt .run &amp;&amp; python3 main.py
+
+===== latest mission progress: [] =====
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes read (14%)         =====&gt; 分块，每块大小约为 5.69 MB
+pid:[961] warking between [0, 5965326]                  =====&gt; 分块和子进程的处理可并行
+11.37795639038086 MB of 40.5 MB bytes read (28%)
+pid:[962] warking between [5965326, 11930652]
+17.06693458557129 MB of 40.5 MB bytes read (42%)
+22.75591278076172 MB of 40.5 MB bytes read (56%)
+28.44489097595215 MB of 40.5 MB bytes read (70%)
+34.13386917114258 MB of 40.5 MB bytes read (84%)
+39.82284736633301 MB of 40.5 MB bytes read (98%)
+40.5 MB of 40.5 MB bytes read (100%)
+
+===== file chunk done =====
+
+pid:[961] progress [0, 5965326] done
+pid:[961] warking between [11930652, 17895978]
+pid:[962] progress [5965326, 11930652] done
+pid:[962] warking between [17895978, 23861304]
+pid:[961] progress [11930652, 17895978] done
+pid:[961] warking between [23861304, 29826630]
+pid:[962] progress [17895978, 23861304] done
+pid:[962] warking between [29826630, 35791956]
+pid:[961] progress [23861304, 29826630] done
+pid:[961] warking between [35791956, 41757282]
+pid:[962] progress [29826630, 35791956] done
+pid:[962] warking between [41757282, 42467328]
+pid:[962] progress [41757282, 42467328] done            =====&gt; 子进程 962 的最终处理进度
+pid:[961] progress [35791956, 41757282] done            =====&gt; 子进程 961 的最终处理进度
+                                                        =====&gt; 可以看到最后一个数据块被 962 处理了
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment">##### 两个进程的处理进度和 input.txt 文件大小一致，证明处理完成</span>
+
+<span class="hljs-variable">$stat</span> input.txt
+  File: input.txt
+  Size: 42467328        Blocks: 82944      IO Block: 512    regular file
+Device: 42h/66d Inode: 48132221017522339  Links: 1
+
+<span class="hljs-comment">##### 因为构造文件的所有行都是一样的，所以 input.txt 和 result.txt 的 md5 一致，可以说明文件处理正确</span>
+<span class="hljs-variable">$md5sum</span> input.txt result.txt
+305e85f7574e39fb41de62ff6ee37e03  input.txt
+305e85f7574e39fb41de62ff6ee37e03  result.txt
+
+<span class="hljs-variable">$wc</span> input.txt result.txt
+262144  3407872 42467328 input.txt
+262144  3407872 42467328 result.txt
+
+</div></code></pre>
+<h2 id="%E6%94%AF%E6%8C%81%E4%B8%AD%E6%96%AD%E7%BB%A7%E7%BB%AD">支持中断继续</h2>
+<h3 id="%E6%AD%A3%E5%B8%B8%E8%BF%90%E8%A1%8C%E6%97%B6">正常运行时</h3>
+<p><strong>当前运行状态</strong></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># 查看上一次任务的 928 进程的处理记录</span>
+<span class="hljs-variable">$cat</span> ~/LargeFileHandler/solution_with_single_machine/.run/928.run_id
+
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+
+<span class="hljs-comment"># 查看上一次任务的 929 进程的处理记录</span>
+<span class="hljs-variable">$cat</span> ~/LargeFileHandler/solution_with_single_machine/.run/929.run_id
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+[35791956,41757282]
+huangjinjie@Sangfor-PC:/mnt/f/LargeFileHandler/LargeFileHandler/solution_with_single_machine/.run$ rm 928.run_id
+</div></code></pre>
+<h3 id="%E8%BF%9B%E5%BA%A6%E8%AE%B0%E5%BD%95%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E6%97%B6">进度记录文件丢失时</h3>
+<p><strong>删掉其中一个运行状态记录文件，模拟运行过程中中断的场景，然后继续运行程序，期望可以继续处理</strong></p>
+<pre class="hljs"><code><div><span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_single_machine
+
+<span class="hljs-variable">$rm</span> ./.run/928.run_id
+
+<span class="hljs-variable">$python3</span> main.py
+===== latest mission progress: [[5965326, 11930652], [11930652, 17895978], [23861304, 29826630], [35791956, 41757282]] =====
+
+                                                        =====&gt; 可以看到，目前已经处理了的数据块
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (14%)
+pid:[947] warking between [0, 5965326]
+chunk [5965326, 11930652] already handled.              =====&gt; 【已经处理的数据块自动跳过】
+chunk [11930652, 17895978] already handled.
+11.37795639038086 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (28%)
+pid:[948] warking between [17895978, 23861304]
+chunk [23861304, 29826630] already handled.
+17.06693458557129 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (42%)
+chunk [35791956, 41757282] already handled.
+17.74408721923828 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (43%)
+
+===== file chunk <span class="hljs-keyword">done</span> =====
+
+pid:[948] progress [17895978, 23861304] <span class="hljs-keyword">done</span>
+pid:[948] warking between [29826630, 35791956]
+pid:[947] progress [0, 5965326] <span class="hljs-keyword">done</span>
+pid:[947] warking between [41757282, 42467328]
+pid:[947] progress [41757282, 42467328] <span class="hljs-keyword">done</span>
+pid:[948] progress [29826630, 35791956] <span class="hljs-keyword">done</span>
+</div></code></pre>
+<h3 id="%E7%A8%8B%E5%BA%8F%E5%BC%82%E5%B8%B8%E4%B8%AD%E6%96%AD%E6%97%B6">程序异常中断时</h3>
+<p><strong>运行过程中按下 <code>Ctrl + z</code> 中断程序，期望再次运行时，只处理剩下的数据</strong></p>
+<pre class="hljs"><code><div><span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_single_machine
+
+<span class="hljs-variable">$rm</span> -rf .run &amp;&amp; python3 main.py
+
+===== latest mission progress: [] =====
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (14%)
+pid:[1004] warking between [0, 5965326]
+11.37795639038086 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (28%)
+pid:[1005] warking between [5965326, 11930652]
+17.06693458557129 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (42%)
+22.75591278076172 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (56%)
+28.44489097595215 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (70%)
+34.13386917114258 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (84%)
+39.82284736633301 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (98%)
+40.5 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (100%)
+
+===== file chunk <span class="hljs-keyword">done</span> =====
+
+pid:[1005] progress [5965326, 11930652] <span class="hljs-keyword">done</span>
+pid:[1005] warking between [11930652, 17895978]
+pid:[1004] progress [0, 5965326] <span class="hljs-keyword">done</span>
+pid:[1004] warking between [17895978, 23861304]
+pid:[1005] progress [11930652, 17895978] <span class="hljs-keyword">done</span>
+pid:[1005] warking between [23861304, 29826630]
+pid:[1004] progress [17895978, 23861304] <span class="hljs-keyword">done</span>
+pid:[1004] warking between [29826630, 35791956]
+pid:[1005] progress [23861304, 29826630] <span class="hljs-keyword">done</span>
+pid:[1005] warking between [35791956, 41757282]
+pid:[1004] progress [29826630, 35791956] <span class="hljs-keyword">done</span>
+pid:[1004] warking between [41757282, 42467328]
+pid:[1004] progress [41757282, 42467328] <span class="hljs-keyword">done</span>
+^CTraceback (most recent call last):                      =====&gt; 运行过程中按下 Ctrl+z 中断程序
+  File <span class="hljs-string">"main.py"</span>, line 91, <span class="hljs-keyword">in</span> &lt;module&gt;
+Process ForkPoolWorker-1:
+    main()
+  File <span class="hljs-string">"main.py"</span>, line 87, <span class="hljs-keyword">in</span> main
+Process ForkPoolWorker-2:
+    pool.join()
+  File <span class="hljs-string">"/usr/lib/python3.8/multiprocessing/pool.py"</span>, line 662, <span class="hljs-keyword">in</span> join
+    self._worker_handler.join()
+  File <span class="hljs-string">"/usr/lib/python3.8/threading.py"</span>, line 1011, <span class="hljs-keyword">in</span> join
+    self._wait_for_tstate_lock()
+  File <span class="hljs-string">"/usr/lib/python3.8/threading.py"</span>, line 1027, <span class="hljs-keyword">in</span> _wait_for_tstate_lock
+    <span class="hljs-keyword">elif</span> lock.acquire(block, timeout):
+KeyboardInterrupt
+</div></code></pre>
+<p><strong>查看运行记录文件</strong></p>
+<pre class="hljs"><code><div><span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_single_machine
+
+<span class="hljs-variable">$cat</span> .run/*
+                            =====&gt; 只记录了 6 个数据块，正常应该有 8 个数据块
+                            =====&gt; 数据块 [42467328, 42467328] 和 [35791956, 41757282] 未被处理
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+
+<span class="hljs-variable">$cat</span> .run/1004.run_id
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+
+<span class="hljs-variable">$cat</span> .run/1005.run_id
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+
+</div></code></pre>
+<p><strong>中断后，再次运行</strong></p>
+<pre class="hljs"><code><div><span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_single_machine
+
+<span class="hljs-variable">$python3</span> main.py
+
+===== latest mission progress: [[0, 5965326], [17895978, 23861304], [29826630, 35791956], [41757282, 42467328], [5965326, 11930652], [11930652, 17895978], [23861304, 29826630]] =====
+
+===== input file size: 42467328 =====
+
+===== chunk [0, 5965326] already handled.
+===== chunk [5965326, 11930652] already handled.
+===== chunk [11930652, 17895978] already handled.
+===== chunk [17895978, 23861304] already handled.
+===== chunk [23861304, 29826630] already handled.
+===== chunk [29826630, 35791956] already handled.
+5.68897819519043 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (14%)
+===== chunk [41757282, 42467328] already handled.
+pid:[1025] warking between [35791956, 41757282]
+5.68897819519043 MB of 40.5 MB bytes <span class="hljs-built_in">read</span> (14%)
+
+===== file chunk <span class="hljs-keyword">done</span> =====
+
+pid:[1026] warking between [42467328, 42467328]
+pid:[1026] progress [42467328, 42467328] <span class="hljs-keyword">done</span>           =====&gt; 【只处理了上次任务中断未处理的数据块】
+pid:[1025] progress [35791956, 41757282] <span class="hljs-keyword">done</span>
+
+
+
+<span class="hljs-variable">$md5sum</span> result.txt input.txt                            =====&gt; 判断一下文件完整行，证明，可以中断继续处理
+305e85f7574e39fb41de62ff6ee37e03  result.txt
+305e85f7574e39fb41de62ff6ee37e03  input.txt
+
+</div></code></pre>
+<h3 id="%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">测试数据</h3>
+<p>1296MB 的文件按照 341.3MB 一个数据块进行划分，4 核机器，每个进程处理 <code>341.3MB / 4 = 85.325MB ≈ 86 MB</code></p>
+<p><code>1296MB / 86MB = 15.06</code>，向上取整，即需要写入 16 次</p>
+<pre class="hljs"><code><div>chunk_size: 89478486
+per_cpu_handle_size: 357913941.3333333
+cpu_count: 4
+file_size: 1358954496
+
+85.33343696594238 MB of 1296.0 MB bytes read (6%)
+170.66687393188477 MB of 1296.0 MB bytes read (13%)
+256.00031089782715 MB of 1296.0 MB bytes read (19%)
+341.33374786376953 MB of 1296.0 MB bytes read (26%)
+426.6671848297119 MB of 1296.0 MB bytes read (32%)
+512.0006217956543 MB of 1296.0 MB bytes read (39%)
+597.3340587615967 MB of 1296.0 MB bytes read (46%)
+682.6674957275391 MB of 1296.0 MB bytes read (52%)
+768.0009326934814 MB of 1296.0 MB bytes read (59%)
+853.3343696594238 MB of 1296.0 MB bytes read (65%)
+938.6678066253662 MB of 1296.0 MB bytes read (72%)
+1024.0012435913086 MB of 1296.0 MB bytes read (79%)
+1109.334680557251 MB of 1296.0 MB bytes read (85%)
+1194.6681175231934 MB of 1296.0 MB bytes read (92%)
+1280.0015544891357 MB of 1296.0 MB bytes read (98%)
+1365.334888458252 MB of 1296.0 MB bytes read (105%)
+write to result: (1085, 552337)
+write to result: (1087, 552337)
+write to result: (1086, 552337)
+write to result: (1088, 552337)
+write to result: (1085, 552337)
+write to result: (1087, 552337)
+write to result: (1086, 552337)
+write to result: (1088, 552337)
+write to result: (1085, 552337)
+write to result: (1087, 552337)
+write to result: (1086, 552337)
+write to result: (1088, 552337)
+write to result: (1088, 103553)
+write to result: (1085, 552337)
+write to result: (1087, 552337)
+write to result: (1086, 552337)
+
+real    1m1.010s
+user    2m47.969s
+sys     0m25.844s
+
+$md5sum result.txt
+c71d983dba489f54741c46dcefba2580  result.txt
+
+$md5sum input.txt
+c71d983dba489f54741c46dcefba2580  input.txt
+</div></code></pre>
+<h2 id="%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%84%E7%90%86">分布式处理</h2>
+<h3 id="%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">处理流程</h3>
+<p><img src="./images/ZMQ_PUSH_PULL.png" alt="image"></p>
+<p><strong><code>ventilator</code></strong></p>
+<p>打开 <code>input.txt</code> 文件，用迭代的方式，按照 <code>$CHUNK_SIZE</code> 大小进行切分，并把数据分发给 <code>worker</code>。<strong>打开文件的方式和单机处理的方式一样，只是回调函数换成了发送数据给工作进程</strong></p>
+<p><strong><code>worker</code></strong></p>
+<p>从 <code>ventilator</code> 接收数据，并进行处理，最终把处理结果推给 <code>sinker</code>。</p>
+<p><strong><code>sinker</code></strong></p>
+<p>接收 <code>worker</code> 的处理结果，并写入到结果文件 <code>result.txt</code></p>
+<h3 id="%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95">执行方法</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># 进入工程目录</span>
+<span class="hljs-variable">$cd</span> ~/LargeFileHandler/solution_with_several_machine
+
+<span class="hljs-comment"># 生成测试数据</span>
+<span class="hljs-variable">$bash</span> tools/fake.sh
+
+<span class="hljs-comment">##### 在数据存储服务执行 #####</span>
+<span class="hljs-variable">$python</span> server/server.py
+
+<span class="hljs-variable">$python</span> server/sinker.py
+
+
+<span class="hljs-comment">##### 在其他多个节点执行 #####</span>
+<span class="hljs-variable">$python</span> client/client.py
+</div></code></pre>
+<h3 id="%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91-server">任务分发 Server</h3>
+<p>模块任务是读入文件，并按照 <code>$CHUNK_SIZE</code> 大小进行分块，然后发送给连接到服务器的客户端进行处理</p>
+<p>读入文件切块和发送文件两个过程，可通过协程优化，两者交替进行，效果如下</p>
+<pre class="hljs"><code><div><span class="hljs-variable">$python</span> server/server.py
+85.33343696594238 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (13%)            =============&gt; 读取文件块
+work with chunk: [0, 89478594]                               =============&gt; 发送文件块
+[2022-04-24 23:53:12] send 89478594 bytes to worker
+170.66687393188477 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (26%)
+work with chunk: [89478594, 178957188]
+[2022-04-24 23:53:13] send 89478594 bytes to worker
+256.00031089782715 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (39%)
+work with chunk: [178957188, 268435782]
+[2022-04-24 23:53:14] send 89478594 bytes to worker
+341.33374786376953 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (52%)
+work with chunk: [268435782, 357914376]
+[2022-04-24 23:53:16] send 89478594 bytes to worker
+426.6671848297119 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (65%)
+work with chunk: [357914376, 447392970]
+[2022-04-24 23:53:17] send 89478594 bytes to worker
+512.0006217956543 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (79%)
+work with chunk: [447392970, 536871564]
+[2022-04-24 23:53:18] send 89478594 bytes to worker
+597.3340587615967 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (92%)
+work with chunk: [536871564, 626350158]
+[2022-04-24 23:53:19] send 89478594 bytes to worker
+682.6673927307129 MB of 648.0 MB bytes <span class="hljs-built_in">read</span> (105%)
+work with chunk: [626350158, 715828644]
+[2022-04-24 23:53:20] send 89478486 bytes to worker
+
+distribute [8 missions] finish.
+
+</div></code></pre>
+<h3 id="%E7%BB%93%E6%9E%9C%E6%B1%87%E6%80%BB%E5%A4%84%E7%90%86-sinker">结果汇总处理 Sinker</h3>
+<p>接收客户端的处理结果，并进行整合，输出到结果文件 <code>result.txt</code></p>
+<h3 id="%E5%AE%A2%E6%88%B7%E7%AB%AF-client">客户端 Client</h3>
+<p>接收服务端的数据块，并用多进程进行处理，把处理结果发送给 Sinker</p>
+<p>发送子进程的处理结果和处理数据块，可以用协程进行优化，从日志可以看到，两者可以交替执行</p>
+<pre class="hljs"><code><div>[2022-04-24 23:45:39] pid: [6323] sending...        =============&gt; 发送处理的结果
+[2022-04-24 23:45:39] pid: [6343] handling...       =============&gt; 处理接收的数据
+[2022-04-24 23:45:39] pid: [6340] handling...
+[2022-04-24 23:45:39] pid: [6341] handling...
+[2022-04-24 23:45:39] pid: [6342] handling...
+[2022-04-24 23:45:39] pid: [6323] sending...
+[2022-04-24 23:45:39] pid: [6343] handling...
+[2022-04-24 23:45:39] pid: [6340] handling...
+[2022-04-24 23:45:39] pid: [6341] handling...
+[2022-04-24 23:45:39] pid: [6342] handling...
+[2022-04-24 23:45:39] pid: [6323] sending...
+[2022-04-24 23:45:39] pid: [6343] handling...
+[2022-04-24 23:45:39] pid: [6340] handling...
+[2022-04-24 23:45:39] pid: [6341] handling...
+[2022-04-24 23:45:39] pid: [6342] handling...
+[2022-04-24 23:45:39] pid: [6323] sending...
+[2022-04-24 23:45:39] pid: [6343] handling...
+[2022-04-24 23:45:39] pid: [6340] handling...
+[2022-04-24 23:45:39] pid: [6341] handling...
+[2022-04-24 23:45:39] pid: [6342] handling...
+[2022-04-24 23:45:39] pid: [6323] sending...
+</div></code></pre>
+
+</body>
+</html>

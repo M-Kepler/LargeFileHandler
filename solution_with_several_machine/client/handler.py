@@ -4,7 +4,6 @@ import os
 import json
 from datetime import datetime
 from decimal import Decimal
-import multiprocessing as mp
 
 
 class DataHandler(object):
@@ -63,30 +62,3 @@ class DataHandler(object):
         except Exception as ex:
             print("pid: [{}] handle line [{}] error: {}".format(
                 os.getpid(), line, ex))
-
-    async def run(self, socket):
-        """
-        handle file chunk, and return result
-
-        :param socket - connection to sinker
-        :return handle result list
-        """
-
-        data = await socket.receive_from_server()
-
-        pool = mp.Pool(mp.cpu_count())
-        jobs = []
-        result = []
-        for line in data.splitlines():
-            jobs.append(pool.apply_async(self.work, (line, )))
-
-        for job in jobs:
-            handle_result = job.get()
-            """
-            XXX [DEL] FOR DEBUG
-            dt = datetime.now()
-            print("[{}] pid: [{}] sending...".format(
-                dt.strftime("%Y-%m-%d %H:%M:%S"), os.getpid()))
-            """
-            await socket.send_to_sink(handle_result)
-        pool.close()

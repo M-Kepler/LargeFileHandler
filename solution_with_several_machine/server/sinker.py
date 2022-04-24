@@ -6,13 +6,12 @@ result collector
 
 import asyncio
 import os
-from datetime import datetime
 
 import zmq
 import zmq.asyncio
 
 from const import SinkerCfg as cfg
-from result_handler import ResultHandler
+from result_handle.result_handler import ResultHandler
 
 
 class SinkServer(object):

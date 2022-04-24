@@ -7,6 +7,7 @@ import zmq.asyncio
 from datetime import datetime
 from handler import DataHandler
 from const import Config as cfg
+import multiprocessing as mp
 
 
 class Client(object):
@@ -51,13 +52,41 @@ class Client(object):
         await self._sender.send_string(data)
 
 
+async def run(data_handler, socket):
+    """
+    handle file chunk, and return result
+
+    :param socket - connection to sinker
+    :return handle result list
+    """
+
+    data = await socket.receive_from_server()
+
+    pool = mp.Pool(mp.cpu_count())
+    jobs = []
+    for line in data.splitlines():
+        jobs.append(pool.apply_async(
+            data_handler.work, (line, )))
+
+    for job in jobs:
+        handle_result = job.get()
+        """
+        XXX [DEL] FOR DEBUG
+        dt = datetime.now()
+        print("[{}] pid: [{}] sending...".format(
+            dt.strftime("%Y-%m-%d %H:%M:%S"), os.getpid()))
+        """
+        await socket.send_to_sink(handle_result)
+    pool.close()
+
+
 async def main():
     print("client listening ...")
     client = Client()
-    data_handler_api = DataHandler()
+    data_handler = DataHandler()
     while True:
         # handling msg
-        await data_handler_api.run(client)
+        await run(data_handler, client)
 
 
 if __name__ == "__main__":

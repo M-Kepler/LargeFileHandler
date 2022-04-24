@@ -18,6 +18,7 @@ echo $content > input.txt
 # 2^29 = -----> 80.5 GB
 # 2^30 = -----> 161.0 GB
 
-for i in {1..22}; do cat input.txt input.txt > input2.txt && mv input2.txt input.txt; done
+# for i in {1..22}; do cat input.txt input.txt > input2.txt && mv input2.txt input.txt; done
+for i in {1..20}; do cat input.txt input.txt > input2.txt && mv input2.txt input.txt; done
 
 wc input.txt

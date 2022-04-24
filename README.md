@@ -1,24 +1,29 @@
-- [`LargeFileHandler`](#largefilehandler)
-    - [题目](#题目)
-    - [要求](#要求)
-    - [注意](#注意)
+- [LargeFileHandler](#largefilehandler)
+  - [题目](#题目)
+  - [要求](#要求)
+  - [注意](#注意)
 - [需求分析](#需求分析)
 - [解决方案](#解决方案)
-    - [假数据构造](#假数据构造)
-    - [正确性判断](#正确性判断)
-    - [数据量分析](#数据量分析)
-    - [单机处理](#单机处理)
-        - [执行方法](#执行方法)
-        - [处理流程](#处理流程)
-        - [测试数据](#测试数据)
-    - [分布式处理](#分布式处理)
-        - [处理流程](#处理流程-1)
-        - [执行方法](#执行方法-1)
-        - [任务分发 Server](#任务分发-server)
-        - [结果汇总处理 Sinker](#结果汇总处理-sinker)
-        - [客户端 Client](#客户端-client)
+  - [假数据构造](#假数据构造)
+  - [正确性判断](#正确性判断)
+  - [数据量分析](#数据量分析)
+  - [单机处理](#单机处理)
+    - [处理流程](#处理流程)
+    - [执行方法](#执行方法)
+    - [准确性](#准确性)
+  - [支持中断继续](#支持中断继续)
+    - [正常运行时](#正常运行时)
+    - [进度记录文件丢失时](#进度记录文件丢失时)
+    - [程序异常中断时](#程序异常中断时)
+    - [测试数据](#测试数据)
+  - [分布式处理](#分布式处理)
+    - [处理流程](#处理流程-1)
+    - [执行方法](#执行方法-1)
+    - [任务分发 Server](#任务分发-server)
+    - [结果汇总处理 Sinker](#结果汇总处理-sinker)
+    - [客户端 Client](#客户端-client)
 
-# `LargeFileHandler`
+# LargeFileHandler
 
 ## 题目
 
@@ -166,22 +171,9 @@ PC_CNT = _1TB / _128GB
 
 ## 单机处理
 
-### 执行方法
-
-```sh
-# 进入工程目录
-$cd ~/LargeFileHandler/solution_with_several_machine
-
-# 生成测试数据
-$bash ../tools/fake.sh
-
-# 开始处理
-$python file_handler.py
-```
-
 ### 处理流程
 
-![image](./images/solution_with_single_machine.png)
+![image](./images/single-处理流程.png)
 
 直接在数据存储服务器上操作，这个服务器磁盘空间足够，只需要考虑内存问题即可。（一般不允许这样操作，数据存储服务器是很重要的服务资源，一旦瘫痪，后果不堪设想）
 
@@ -200,6 +192,264 @@ $python file_handler.py
 - 多个进程各自处理各自的数据，但是最终都要输出到同一个文件，不控制的话，内容就会乱序，但是题目说，允许乱序
 
 - 也可以用 `multiprocessing` 的 `callback` 参数来处理子进程的执行结果，由父进程来完成文件写入
+
+### 执行方法
+
+```sh
+# 进入工程目录
+$cd ~/LargeFileHandler/solution_with_several_machine
+
+# 生成测试数据
+$bash ../tools/fake.sh
+
+# 开始处理
+$rm result.txt && python main.py
+```
+
+### 准确性
+
+以下为处理一个 41M 大小的文件的日志输出
+
+![image](./images/../images/single-文件切割.png)
+
+```log
+$cd ~/LargeFileHandler/solution_with_single_machine
+
+$rm -rf result.txt .run && python3 main.py
+
+===== latest mission progress: [] =====
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes read (14%)         =====> 分块，每块大小约为 5.69 MB
+pid:[961] warking between [0, 5965326]                  =====> 分块和子进程的处理可并行
+11.37795639038086 MB of 40.5 MB bytes read (28%)
+pid:[962] warking between [5965326, 11930652]
+17.06693458557129 MB of 40.5 MB bytes read (42%)
+22.75591278076172 MB of 40.5 MB bytes read (56%)
+28.44489097595215 MB of 40.5 MB bytes read (70%)
+34.13386917114258 MB of 40.5 MB bytes read (84%)
+39.82284736633301 MB of 40.5 MB bytes read (98%)
+40.5 MB of 40.5 MB bytes read (100%)
+
+===== file chunk done =====
+
+pid:[961] progress [0, 5965326] done
+pid:[961] warking between [11930652, 17895978]
+pid:[962] progress [5965326, 11930652] done
+pid:[962] warking between [17895978, 23861304]
+pid:[961] progress [11930652, 17895978] done
+pid:[961] warking between [23861304, 29826630]
+pid:[962] progress [17895978, 23861304] done
+pid:[962] warking between [29826630, 35791956]
+pid:[961] progress [23861304, 29826630] done
+pid:[961] warking between [35791956, 41757282]
+pid:[962] progress [29826630, 35791956] done
+pid:[962] warking between [41757282, 42467328]
+pid:[962] progress [41757282, 42467328] done            =====> 子进程 962 的最终处理进度
+pid:[961] progress [35791956, 41757282] done            =====> 子进程 961 的最终处理进度
+                                                        =====> 可以看到最后一个数据块被 962 处理了
+```
+
+```sh
+##### 两个进程的处理进度和 input.txt 文件大小一致，证明处理完成
+
+$stat input.txt
+  File: input.txt
+  Size: 42467328        Blocks: 82944      IO Block: 512    regular file
+Device: 42h/66d Inode: 48132221017522339  Links: 1
+
+##### 因为构造文件的所有行都是一样的，所以 input.txt 和 result.txt 的 md5 一致，可以说明文件处理正确
+$md5sum input.txt result.txt
+305e85f7574e39fb41de62ff6ee37e03  input.txt
+305e85f7574e39fb41de62ff6ee37e03  result.txt
+
+$wc input.txt result.txt
+262144  3407872 42467328 input.txt
+262144  3407872 42467328 result.txt
+
+```
+
+## 支持中断继续
+
+### 正常运行时
+
+**当前运行状态**
+
+```sh
+# 查看上一次任务的 928 进程的处理记录
+$cat ~/LargeFileHandler/solution_with_single_machine/.run/928.run_id
+
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+
+# 查看上一次任务的 929 进程的处理记录
+$cat ~/LargeFileHandler/solution_with_single_machine/.run/929.run_id
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+[35791956,41757282]
+huangjinjie@Sangfor-PC:/mnt/f/LargeFileHandler/LargeFileHandler/solution_with_single_machine/.run$ rm 928.run_id
+```
+
+### 进度记录文件丢失时
+
+**删掉其中一个运行状态记录文件，模拟运行过程中中断的场景，然后继续运行程序，期望可以继续处理**
+
+```sh
+$cd ~/LargeFileHandler/solution_with_single_machine
+
+$rm ./.run/928.run_id
+
+$python3 main.py
+===== latest mission progress: [[5965326, 11930652], [11930652, 17895978], [23861304, 29826630], [35791956, 41757282]] =====
+
+                                                        =====> 可以看到，目前已经处理了的数据块
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes read (14%)
+pid:[947] warking between [0, 5965326]
+chunk [5965326, 11930652] already handled.              =====> 【已经处理的数据块自动跳过】
+chunk [11930652, 17895978] already handled.
+11.37795639038086 MB of 40.5 MB bytes read (28%)
+pid:[948] warking between [17895978, 23861304]
+chunk [23861304, 29826630] already handled.
+17.06693458557129 MB of 40.5 MB bytes read (42%)
+chunk [35791956, 41757282] already handled.
+17.74408721923828 MB of 40.5 MB bytes read (43%)
+
+===== file chunk done =====
+
+pid:[948] progress [17895978, 23861304] done
+pid:[948] warking between [29826630, 35791956]
+pid:[947] progress [0, 5965326] done
+pid:[947] warking between [41757282, 42467328]
+pid:[947] progress [41757282, 42467328] done
+pid:[948] progress [29826630, 35791956] done
+```
+
+### 程序异常中断时
+
+**运行过程中按下 `Ctrl + z` 中断程序，期望再次运行时，只处理剩下的数据**
+
+```sh
+$cd ~/LargeFileHandler/solution_with_single_machine
+
+$rm -rf .run && python3 main.py
+
+===== latest mission progress: [] =====
+
+===== input file size: 42467328 =====
+
+5.68897819519043 MB of 40.5 MB bytes read (14%)
+pid:[1004] warking between [0, 5965326]
+11.37795639038086 MB of 40.5 MB bytes read (28%)
+pid:[1005] warking between [5965326, 11930652]
+17.06693458557129 MB of 40.5 MB bytes read (42%)
+22.75591278076172 MB of 40.5 MB bytes read (56%)
+28.44489097595215 MB of 40.5 MB bytes read (70%)
+34.13386917114258 MB of 40.5 MB bytes read (84%)
+39.82284736633301 MB of 40.5 MB bytes read (98%)
+40.5 MB of 40.5 MB bytes read (100%)
+
+===== file chunk done =====
+
+pid:[1005] progress [5965326, 11930652] done
+pid:[1005] warking between [11930652, 17895978]
+pid:[1004] progress [0, 5965326] done
+pid:[1004] warking between [17895978, 23861304]
+pid:[1005] progress [11930652, 17895978] done
+pid:[1005] warking between [23861304, 29826630]
+pid:[1004] progress [17895978, 23861304] done
+pid:[1004] warking between [29826630, 35791956]
+pid:[1005] progress [23861304, 29826630] done
+pid:[1005] warking between [35791956, 41757282]
+pid:[1004] progress [29826630, 35791956] done
+pid:[1004] warking between [41757282, 42467328]
+pid:[1004] progress [41757282, 42467328] done
+^CTraceback (most recent call last):                      =====> 运行过程中按下 Ctrl+z 中断程序
+  File "main.py", line 91, in <module>
+Process ForkPoolWorker-1:
+    main()
+  File "main.py", line 87, in main
+Process ForkPoolWorker-2:
+    pool.join()
+  File "/usr/lib/python3.8/multiprocessing/pool.py", line 662, in join
+    self._worker_handler.join()
+  File "/usr/lib/python3.8/threading.py", line 1011, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib/python3.8/threading.py", line 1027, in _wait_for_tstate_lock
+    elif lock.acquire(block, timeout):
+KeyboardInterrupt
+```
+
+**查看运行记录文件**
+
+```sh
+$cd ~/LargeFileHandler/solution_with_single_machine
+
+$cat .run/*
+                            =====> 只记录了 6 个数据块，正常应该有 8 个数据块
+                            =====> 数据块 [42467328, 42467328] 和 [35791956, 41757282] 未被处理
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+
+$cat .run/1004.run_id
+[0,5965326]
+[17895978,23861304]
+[29826630,35791956]
+[41757282,42467328]
+
+$cat .run/1005.run_id
+[5965326,11930652]
+[11930652,17895978]
+[23861304,29826630]
+
+```
+
+**中断后，再次运行**
+
+```sh
+$cd ~/LargeFileHandler/solution_with_single_machine
+
+$python3 main.py
+
+===== latest mission progress: [[0, 5965326], [17895978, 23861304], [29826630, 35791956], [41757282, 42467328], [5965326, 11930652], [11930652, 17895978], [23861304, 29826630]] =====
+
+===== input file size: 42467328 =====
+
+===== chunk [0, 5965326] already handled.
+===== chunk [5965326, 11930652] already handled.
+===== chunk [11930652, 17895978] already handled.
+===== chunk [17895978, 23861304] already handled.
+===== chunk [23861304, 29826630] already handled.
+===== chunk [29826630, 35791956] already handled.
+5.68897819519043 MB of 40.5 MB bytes read (14%)
+===== chunk [41757282, 42467328] already handled.
+pid:[1025] warking between [35791956, 41757282]
+5.68897819519043 MB of 40.5 MB bytes read (14%)
+
+===== file chunk done =====
+
+pid:[1026] warking between [42467328, 42467328]
+pid:[1026] progress [42467328, 42467328] done           =====> 【只处理了上次任务中断未处理的数据块】
+pid:[1025] progress [35791956, 41757282] done
+
+
+
+$md5sum result.txt input.txt                            =====> 判断一下文件完整行，证明，可以中断继续处理
+305e85f7574e39fb41de62ff6ee37e03  result.txt
+305e85f7574e39fb41de62ff6ee37e03  input.txt
+
+```
 
 ### 测试数据
 
@@ -265,7 +515,7 @@ c71d983dba489f54741c46dcefba2580  input.txt
 
 **`ventilator`**
 
-打开 `input.txt` 文件，用迭代的方式，按照 `$CHUNK_SIZE` 大小进行切分，并把数据分发给 `worker`。
+打开 `input.txt` 文件，用迭代的方式，按照 `$CHUNK_SIZE` 大小进行切分，并把数据分发给 `worker`。**打开文件的方式和单机处理的方式一样，只是回调函数换成了发送数据给工作进程**
 
 **`worker`**
 
@@ -284,7 +534,7 @@ $cd ~/LargeFileHandler/solution_with_several_machine
 # 生成测试数据
 $bash tools/fake.sh
 
-##### 在数据存储服务执行 ##### 
+##### 在数据存储服务执行 #####
 $python server/server.py
 
 $python server/sinker.py
@@ -300,7 +550,7 @@ $python client/client.py
 
 读入文件切块和发送文件两个过程，可通过协程优化，两者交替进行，效果如下
 
-```log
+```sh
 $python server/server.py
 85.33343696594238 MB of 648.0 MB bytes read (13%)            =============> 读取文件块
 work with chunk: [0, 89478594]                               =============> 发送文件块
@@ -334,9 +584,6 @@ distribute [8 missions] finish.
 ### 结果汇总处理 Sinker
 
 接收客户端的处理结果，并进行整合，输出到结果文件 `result.txt`
-
-```log
-```
 
 ### 客户端 Client
 

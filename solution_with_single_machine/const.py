@@ -16,4 +16,9 @@ OUPUT_FILE = os.path.join(WORK_DIR, "result.txt")
 # CHUNK_SIZE = 100 * 1024 * 1024 * 1024
 
 # XXX FOR DEBUG 341.3M
-CHUNK_SIZE = 1024 * 1024 * 1024 / 3
+CHUNK_SIZE = 1024 * 1024 * 1024 / 3 / 3 / 10
+
+# record mission progress
+RUN_ID_PTH = os.path.join(WORK_DIR, ".run/")
+
+RUN_ID_POSTFIX = ".run_id"

@@ -11,9 +11,10 @@ import math
 import multiprocessing as mp
 import os
 import sys
+import aiofiles
 
-import const
-from progress import Progress
+from const import ServerCfg
+from file_handle.progress import Progress
 
 
 class FileHandler(object):
@@ -29,7 +30,7 @@ class FileHandler(object):
         self._input_file = input_file
         self._progress_api = Progress()
         # for all process load memory
-        self._chunk_size = math.ceil(const.CHUNK_SIZE / mp.cpu_count())
+        self._chunk_size = math.ceil(ServerCfg.CHUNK_SIZE / mp.cpu_count())
         self._callback = callback
 
     @property
@@ -85,7 +86,7 @@ class FileHandler(object):
                     print("\n===== file chunk done =====\n")
                     break
 
-    def worker(self, chunk_start, chunk_size):
+    async def worker(self, chunk_start, chunk_size):
         """
         work with input file chunk
 
@@ -95,8 +96,8 @@ class FileHandler(object):
         print("pid:[{}] warking between [{}, {}]".format(
             os.getpid(), chunk_start, chunk_start + chunk_size))
 
-        with open(self._input_file) as fd:
+        async with aiofiles.open(self._input_file) as fd:
             fd.seek(chunk_start)
-            chunk_data = fd.read(chunk_size)
-            self._callback(chunk_data)
+            chunk_data = await fd.read(chunk_size)
+            await self._callback(chunk_data)
             self._progress_api.update_progress(chunk_start, chunk_size)
