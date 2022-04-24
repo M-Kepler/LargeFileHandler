@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 
-from datetime import datetime
+"""
+do something with client results
+"""
 
 import aiofiles
 

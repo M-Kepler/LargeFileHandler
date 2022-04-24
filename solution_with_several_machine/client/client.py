@@ -1,5 +1,12 @@
 # -*-coding:utf-8-*-
 
+"""
+worker process
+
+receive data from server and handle
+send handle result to sinker
+"""
+
 import os
 import zmq
 import asyncio

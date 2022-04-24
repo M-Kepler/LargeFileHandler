@@ -3,6 +3,7 @@
 """
 handle mission progress
 """
+
 import json
 import os
 from const import ServerCfg as cfg

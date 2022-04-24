@@ -7,7 +7,6 @@ handle file with multi process
 import datetime
 import json
 import multiprocessing as mp
-import os
 from decimal import Decimal
 
 import const

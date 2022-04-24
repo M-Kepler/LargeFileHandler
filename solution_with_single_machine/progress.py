@@ -3,6 +3,7 @@
 """
 handle mission progress
 """
+
 import json
 import os
 import const

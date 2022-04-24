@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 
+"""
+handle received data
+"""
+
 import os
 import json
 from datetime import datetime

@@ -1,10 +1,16 @@
 # -*- coding:utf-8 -*-
+
 """
 Author       : M_Kepler
 EMail        : m_kepler@foxmail.com
 Last modified: 2022-04-23 12:10:25
-Filename     : largeFileHandler.py
+Filename     : file_handler.py
 Description  : large file handler
+
+parse file
+
+split file into several chunk to handle
+record running progress and support interrupt recovery next time
 """
 
 import math
@@ -46,6 +52,9 @@ class FileHandler(object):
     def chunkify(self):
         """
         use generator to split big file into multi chunk
+
+        if file mission already finished, quit.
+        if chunk already handled, skip
 
         :return (chunk_start, chunk_size)
         """

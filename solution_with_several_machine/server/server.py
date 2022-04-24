@@ -1,5 +1,10 @@
 # -*-coding:utf-8-*-
 
+"""
+read file and split into several chunk
+distribu chunk to clients for further processing
+"""
+
 import zmq
 import asyncio
 import zmq.asyncio

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
+
 """
-Author       : M_Kepler
-EMail        : m_kepler@foxmail.com
-Last modified: 2022-04-23 12:10:25
-Filename     : largeFileHandler.py
-Description  : large file handler
+parse file
+
+split file into several chunk to handle
+record running progress and support interrupt recovery next time
 """
 
 import math

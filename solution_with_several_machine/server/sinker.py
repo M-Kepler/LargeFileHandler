@@ -1,7 +1,8 @@
 # -*-coding:utf-8-*-
 
 """
-result collector
+gather handle result from clients
+and output final result to result.txt
 """
 
 import asyncio
