@@ -113,7 +113,7 @@ class FileHandler(object):
                 fd.readline()
                 chunk_end = fd.tell()
 
-                # XXX for log progress
+                # for log progress
                 progress += (chunk_end - chunk_start)
                 print('{0} MB of {1} MB bytes read ({2}%)'.format(
                     progress / 1024 / 1024, file_end / 1024 / 1024,
@@ -133,7 +133,6 @@ class FileHandler(object):
         with open(self._input_file) as fd:
             fd.seek(chunk_start)
             chunk_data = fd.read(chunk_size)
-            # FIXME 阻塞
             self._callback(chunk_data)
 
     def run(self):
