@@ -130,12 +130,12 @@ wc input.txt
 
 ```json
 {
-    "id": "c9b72270-b548-47f5-af9d-6372846bd758",
-    "symbol": "166842.XSHE",
-    "price": 66.51,
-    "quantity": 295,
-    "type": "feature",
-    "datetime": "2011-07-16 00:42:32481"
+  "id": "c9b72270-b548-47f5-af9d-6372846bd758",
+  "symbol": "166842.XSHE",
+  "price": 66.51,
+  "quantity": 295,
+  "type": "feature",
+  "datetime": "2011-07-16 00:42:32481"
 }
 ```
 
@@ -291,12 +291,11 @@ $cat ~/LargeFileHandler/solution_with_single_machine/.run/929.run_id
 [11930652,17895978]
 [23861304,29826630]
 [35791956,41757282]
-huangjinjie@Sangfor-PC:/mnt/f/LargeFileHandler/LargeFileHandler/solution_with_single_machine/.run$ rm 928.run_id
 ```
 
 ### 进度记录文件丢失时
 
-**删掉其中一个运行状态记录文件，模拟运行过程中中断的场景，然后继续运行程序，期望可以继续处理**
+**删掉其中一个运行状态记录文件，然后继续运行程序，期望可以继续处理剩下的数据块**
 
 ```sh
 $cd ~/LargeFileHandler/solution_with_single_machine
@@ -312,7 +311,7 @@ $python3 main.py
 
 5.68897819519043 MB of 40.5 MB bytes read (14%)
 pid:[947] warking between [0, 5965326]
-chunk [5965326, 11930652] already handled.              =====> 【已经处理的数据块自动跳过】
+chunk [5965326, 11930652] already handled.              =====> 【分块时，跳过已经处理的数据块】
 chunk [11930652, 17895978] already handled.
 11.37795639038086 MB of 40.5 MB bytes read (28%)
 pid:[948] warking between [17895978, 23861304]
@@ -392,7 +391,7 @@ KeyboardInterrupt
 $cd ~/LargeFileHandler/solution_with_single_machine
 
 $cat .run/*
-                            =====> 只记录了 6 个数据块，正常应该有 8 个数据块
+                            =====> 只记录了 6 个数据块，正常处理完成时，应该有 8 个数据块
                             =====> 数据块 [42467328, 42467328] 和 [35791956, 41757282] 未被处理
 [0,5965326]
 [17895978,23861304]
@@ -440,12 +439,12 @@ pid:[1025] warking between [35791956, 41757282]
 ===== file chunk done =====
 
 pid:[1026] warking between [42467328, 42467328]
-pid:[1026] progress [42467328, 42467328] done           =====> 【只处理了上次任务中断未处理的数据块】
+pid:[1026] progress [42467328, 42467328] done           =====> 【只处理了上次任务中未被处理的数据块】
 pid:[1025] progress [35791956, 41757282] done
 
 
 
-$md5sum result.txt input.txt                            =====> 判断一下文件完整行，证明，可以中断继续处理
+$md5sum result.txt input.txt                            =====> 判断一下文件完整性，证明，可以中断继续处理
 305e85f7574e39fb41de62ff6ee37e03  result.txt
 305e85f7574e39fb41de62ff6ee37e03  input.txt
 
@@ -515,7 +514,7 @@ c71d983dba489f54741c46dcefba2580  input.txt
 
 **`ventilator`**
 
-打开 `input.txt` 文件，用迭代的方式，按照 `$CHUNK_SIZE` 大小进行切分，并把数据分发给 `worker`。**打开文件的方式和单机处理的方式一样，只是回调函数换成了发送数据给工作进程**
+打开 `input.txt` 文件，用生成器按 `$CHUNK_SIZE` 大小进行切分，并把数据块分发给 `worker`；**打开文件的方式和单机处理的方式一样，只是回调函数换成了发送数据给工作进程**
 
 **`worker`**
 
@@ -534,13 +533,13 @@ $cd ~/LargeFileHandler/solution_with_several_machine
 # 生成测试数据
 $bash tools/fake.sh
 
-##### 在数据存储服务执行 #####
+##### 在数据存储服器具上执行 #####
 $python server/server.py
 
 $python server/sinker.py
 
 
-##### 在其他多个节点执行 #####
+##### 在其他节点执行 #####
 $python client/client.py
 ```
 
@@ -584,6 +583,10 @@ distribute [8 missions] finish.
 ### 结果汇总处理 Sinker
 
 接收客户端的处理结果，并进行整合，输出到结果文件 `result.txt`
+
+```log
+
+```
 
 ### 客户端 Client
 
